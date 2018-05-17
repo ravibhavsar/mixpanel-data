@@ -25,16 +25,30 @@ app.post('/', function(req, res) {
 app.get('/getEventData', function(req, res, next) {
     var response = {};
     var params = req.query;
-    console.log(params);
-    console.log('after param log');
-    type = params.type, 
-    event = params.event, 
-    unit = params.unit,
-    interval = params.interval,
-    from_date = params.from_date,
-    to_date = params.to_date
+    type = params.type;
+    event = params.event; 
+    unit = params.unit;
+    interval = params.interval;
+    from_date = params.from_date;
+    to_date = params.to_date;
 
     getEventDataFromMixPanel(event, type, unit, interval, from_date, to_date)
+      .then((response) => res.json(response))
+      .catch(next);
+});
+
+app.get('/getEventPropertyData', function(req, res, next) {
+    var response = {};
+    var params = req.query;
+    type = params.type;
+    event = params.event; 
+    unit = params.unit;
+    interval = params.interval;
+    from_date = params.from_date;
+    to_date = params.to_date;
+    name = params.name;
+
+    getEventPropertyDataFromMixPanel(event, type, unit, interval, from_date, to_date, name)
       .then((response) => res.json(response))
       .catch(next);
 });
@@ -52,6 +66,33 @@ function getEventDataFromMixPanel(event, type, unit, interval, from_date, to_dat
       type: type, 
       event: event, 
       unit: unit,
+      interval: interval,
+      // from_date: from_date,
+      // to_date: to_date,
+    },
+    headers: 
+      { 
+        'cache-control': 'no-cache',
+        'authorization': auth
+      }
+   };
+    return rp(options);
+}
+
+function getEventPropertyDataFromMixPanel(event, type, unit, interval, from_date, to_date, name)
+{
+  var request = require("request");
+
+  var auth = "Basic " + new Buffer('1ffa64e79f0f6d6da82d0dd09e3fafae' + ":" + '').toString("base64");
+  var options = { 
+    method: 'GET',
+    url: 'https://mixpanel.com/api/2.0/events/properties/',
+    qs: 
+    { 
+      type: type, 
+      event: event, 
+      unit: unit,
+      name: name,
       // interval: interval,
       // from_date: from_date,
       // to_date: to_date,
