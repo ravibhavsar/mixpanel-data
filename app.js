@@ -2,7 +2,9 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var rp = require('request-promise');
-var axios = require('axios');
+var config = require('./config/config.json');
+
+console.log("cofig...", config.hash);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
@@ -12,7 +14,7 @@ var router = express.Router();
 
 app.get('/', function(req, res) {
   res.send({
-    "Output": "Hello World!"
+    "Output": "Hello World! 123"
   });
 });
 
@@ -57,7 +59,7 @@ function getEventDataFromMixPanel(event, type, unit, interval, from_date, to_dat
 {
   var request = require("request");
 
-  var auth = "Basic " + new Buffer('1ffa64e79f0f6d6da82d0dd09e3fafae' + ":" + '').toString("base64");
+  var auth = "Basic " + new Buffer(config.hash + ":" + '').toString("base64");
   var options = { 
     method: 'GET',
     url: 'https://mixpanel.com/api/2.0/events/',
@@ -83,7 +85,7 @@ function getEventPropertyDataFromMixPanel(event, type, unit, interval, from_date
 {
   var request = require("request");
 
-  var auth = "Basic " + new Buffer('1ffa64e79f0f6d6da82d0dd09e3fafae' + ":" + '').toString("base64");
+  var auth = "Basic " + new Buffer(config.hash + ":" + '').toString("base64");
   var options = { 
     method: 'GET',
     url: 'https://mixpanel.com/api/2.0/events/properties/',
